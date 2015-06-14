@@ -1,0 +1,73 @@
+<HEAD>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="initial-scale=1, user-scalable=no">
+
+<style type='text/css'>
+
+body {font-family:Helvetica,FreeSans,Arial,sans; font-size:18px;}
+h1 {margin:0; font-size:22px;}
+label {font-weight:bold; display:inline-block; width:50%;}
+#wrapper {width:100%; height:100%;}
+</style>
+
+<script>
+var s$ = function(e) {return document.getElementById(e);};
+
+if (window.DeviceMotionEvent) {
+    alert('devicemotion supported');
+    window.addEventListener('devicemotion', function(ev) {
+//        var acc = ev.accelerationIncludingGravity;
+        var acc = ev.acceleration;
+        dmHdlr(acc.x, acc.y, acc.z);
+    }, false);
+}
+else {
+    alert("devicemotion not supported on your device or browser.");
+}
+
+var lastDM = new Date().getTime();
+function dmHdlr(aX, aY, aZ) {
+    var currDM = new Date().getTime();
+    if (currDM < lastDM + 500) {return;}
+    lastDM = currDM;
+    
+    s$('aX').innerHTML = aX ? aX.toFixed(3) : '?';
+    s$('aY').innerHTML = aY ? aY.toFixed(3) : '?';
+    s$('aZ').innerHTML = aZ ? aZ.toFixed(3) : '?';
+	
+	if (aX > 3)
+      s$('overDriveX').innerHTML = 1+parseInt(s$('overDriveX').innerHTML);
+	if (aY > 3)
+      s$('overDriveY').innerHTML = 1+parseInt(s$('overDriveY').innerHTML);
+	if (aZ > 3)
+      s$('overDriveZ').innerHTML = 1+parseInt(s$('overDriveZ').innerHTML);
+	
+}
+
+var clicks = 0;
+document.addEventListener("click", function(){
+    s$('clicks').innerHTML = 1+parseInt(s$('clicks').innerHTML);
+});
+
+
+</script>
+
+</HEAD>
+
+<BODY>
+<div id="wrapper">
+    <h1>devicemotion test</h1>
+    
+    <p><label for="aX">aX</label><span id="aX"></span></p>
+    <p><label for="aY">aY</label><span id="aY"></span></p>
+    <p><label for="aZ">aZ</label><span id="aZ"></span></p>
+
+    <p><label for="clicks">clicks</label><span id="clicks">0</span></p>
+    <p><label for="overDriveX">overDrive</label><span id="overDriveX">0</span></p>
+    <p><label for="overDriveY">overDrive</label><span id="overDriveY">0</span></p>
+    <p><label for="overDriveZ">overDrive</label><span id="overDriveZ">0</span></p>
+
+	
+</div>
+</BODY>

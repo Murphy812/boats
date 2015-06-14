@@ -1,0 +1,22 @@
+<HEAD>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+var x0 = 10;
+var y0 = 200;
+
+  setInterval(function () {
+    $.get("read_position.php", function(data, status){
+      $("#boat").animate({ left: (data)+'px' }, "slow");
+      $("#boat").text('<='+data+'=>');
+	});
+	
+  }, 2000);
+</script>
+</HEAD>
+
+<BODY>
+<div id="wrapper">
+    <DIV id="boat" style="background-color: green; width: 70; position: absolute; left: 10px; top: 200px"><=></DIV>
+    <DIV id="center" style="background-color: red; width: 5; position: absolute; left: 200px; top: 200px">*</DIV>
+</div>
+</BODY>

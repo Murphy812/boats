@@ -1,0 +1,103 @@
+<HEAD>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="initial-scale=1, user-scalable=no">
+
+<style type='text/css'>
+
+body {font-family:Helvetica,FreeSans,Arial,sans; font-size:18px;}
+h1 {margin:0; font-size:22px;}
+label {font-weight:bold; display:inline-block; width:50%;}
+#wrapper {width:100%; height:100%;}
+</style>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+var s$ = function(e) {return document.getElementById(e);};
+
+if (window.DeviceMotionEvent) {
+    window.addEventListener('devicemotion', function(ev) {
+        var acc = ev.acceleration;
+        dmHdlr(acc.x, acc.y, acc.z);
+    }, false);
+}
+else {
+    alert("devicemotion not supported on your device or browser.");
+}
+
+var lastDM = new Date().getTime();
+
+var intX;
+var intY;
+var intZ;
+var curRow;
+var rowStepId = 0;
+var fullX = 0;
+var fullY = 0;
+var fullZ = 0;
+var fullRow;
+var meterTimeout = 100;
+var rowTimeout = 1000;
+var cooldownTimeout = 500;
+
+  
+function dmHdlr(aX, aY, aZ) {
+    var currDM = new Date().getTime();
+    if (currDM < lastDM + meterTimeout) {return;}
+    lastDM = currDM;
+    
+
+    if(aX) { intX = parseInt(aX.toFixed(3)); s$('aX').innerHTML = intX; }
+      else  { intX = 0; s$('aX').innerHTML = "?"; }	
+
+    if(aY) { intY = parseInt(aY.toFixed(3)); s$('aY').innerHTML = intY; }
+      else  { intY = 0; s$('aY').innerHTML = "?"; }	
+
+    if(aZ) { intZ = parseInt(aZ.toFixed(3)); s$('aZ').innerHTML = intZ; }
+      else  { intZ = 0; s$('aZ').innerHTML = "?"; }	
+
+
+    curRow = Math.floor(Math.sqrt(intX*intX + intY*intY + intZ*intZ));
+    fullX += intX;
+    fullX += intY;
+    fullX += intZ; 
+    if(++rowStepId> rowTimeout/meterTimeout) {
+      
+      fullRow = Math.floor(Math.sqrt(fullX*fullX + fullY*fullY + fullZ*fullZ));
+      if(fullRow > 1) {
+        $.get("rec_rows.php?row_size="+fullRow, function(data, status){
+          s$('overDriveSum').innerHTML = s$('overDriveSum').innerHTML + ' , ' + data;
+        });
+        lastDM += cooldownTimeout;        
+
+      }
+
+      rowStepId = 0;
+      fullX = 0;
+      fullY = 0;
+      fullZ = 0;
+    }
+
+}
+
+var clicks = 0;
+document.addEventListener("click", function(){
+  s$('clicks').innerHTML = 1+parseInt(s$('clicks').innerHTML);
+
+});
+
+
+</script>
+
+</HEAD>
+
+<BODY>
+<div id="wrapper">
+    <h1>Row!</h1>
+    
+    <p><label for="clicks">clicks</label><span id="clicks">0</span></p>
+    <p><label for="overDriveSum">overDriveSum</label><span id="overDriveSum"></span></p>
+	
+</div>
+</BODY>
