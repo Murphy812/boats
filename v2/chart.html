@@ -1,0 +1,64 @@
+<HEAD>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="zingchart.min.js"></script>
+
+<script type="text/javascript">
+  function getAcc() {
+    return Math.floor(Math.random() * 41) -20;
+  }
+  arr1 = [];
+  arr2 = [];
+  arr3 = [];
+  var i = 1;
+
+
+  window.onload = function () {
+    zingchart.render({
+      id: "chart",
+      data: {
+          type: "line",
+          series: []
+      }
+    });
+
+  }
+  
+  setInterval(function () {
+    
+	if(i >= 100)
+	  return;
+
+	  
+	  
+	if(i++ >= 10) {
+      arr1.shift();
+      arr2.shift();
+      arr3.shift();
+	}
+	arr1.push(getAcc());
+	arr2.push(getAcc());
+	arr3.push(getAcc());	
+
+//	if(i++ % 2 == 0)
+
+  zingchart.exec('chart', 'setdata', {
+            data : {
+              type: "line",
+              series: [
+			   {values : arr1}
+			   ,{values : arr2}
+			   ,{values : arr3}
+			  ]
+            }
+    });
+
+		  
+  }, 250);
+  
+</script>
+</HEAD>
+
+<BODY>
+<div id="chart"></div>
+
+</BODY>
